@@ -1,9 +1,7 @@
 using UnityEngine;
-public interface IGameManager
-{
+using Zenject;
 
-}
-public class GameManager : IGameManager
+public class GameManager : MonoBehaviour
 {
 
 }
