@@ -7,9 +7,9 @@ public class Player : MonoBehaviour
     [SerializeField] private float speed = 5;
 
     [Inject]
-    public void Construct(IPlayerInput playerInput)
+    public void Construct(IPlayerInput playerInput,IBoundsService bounds)
     {
-        playerController = new PlayerController(playerInput, transform,speed);
+        playerController = new PlayerController(playerInput, transform,speed, bounds);
     }
     // Update is called once per frame
     void Update()
