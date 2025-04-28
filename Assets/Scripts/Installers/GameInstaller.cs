@@ -10,6 +10,7 @@ public class GameInstaller : MonoInstaller
     {
         Container.Bind<IPlayerInput>().To<KeyboardPlayerInput>().FromComponentInHierarchy().AsSingle();
         Container.Bind<IBoundsService>().To<ScreenBoundsService>().AsSingle();
-        Container.InstantiatePrefab( _playerPrefab );
+        Container.BindFactory<Player,Player.Factory>().FromComponentInNewPrefab(_playerPrefab).AsSingle();
+        Container.BindInterfacesAndSelfTo<GameManager>().AsSingle();
     }
 }

@@ -16,4 +16,5 @@ public class Player : MonoBehaviour
     {
         playerController.Tick();
     }
+    public class Factory : PlaceholderFactory<Player> { }
 }
