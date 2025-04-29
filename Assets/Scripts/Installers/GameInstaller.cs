@@ -5,12 +5,16 @@ using Zenject.SpaceFighter;
 
 public class GameInstaller : MonoInstaller
 {
-    [SerializeField] Player _playerPrefab;
+    [SerializeField] private Bullet bullerPrefab;
+    [SerializeField] private Player playerPrefab;
+    private int bulletPoolSize = 5;
     public override void InstallBindings()
     {
         Container.Bind<IPlayerInput>().To<KeyboardPlayerInput>().FromComponentInHierarchy().AsSingle();
         Container.Bind<IBoundsService>().To<ScreenBoundsService>().AsSingle();
-        Container.BindFactory<Player,Player.Factory>().FromComponentInNewPrefab(_playerPrefab).AsSingle();
+        Container.BindFactory<Player,Player.Factory>().FromComponentInNewPrefab(playerPrefab).AsSingle();
         Container.BindInterfacesAndSelfTo<GameManager>().AsSingle();
+        Container.BindMemoryPool<Bullet, Bullet.Pool>().WithInitialSize(bulletPoolSize).FromComponentInNewPrefab(bullerPrefab).UnderTransformGroup("Bullets");
+
     }
 }

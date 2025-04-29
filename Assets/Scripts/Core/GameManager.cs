@@ -1,9 +1,11 @@
 
+using Assets.Scripts.Utils;
 using Zenject;
 
 public class GameManager : IInitializable
 {
-    readonly Player.Factory playerFactory;
+    private readonly Player.Factory playerFactory;
+
 
     [Inject]
     public GameManager(Player.Factory playerFactory)
