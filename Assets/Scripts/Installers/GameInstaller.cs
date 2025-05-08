@@ -8,6 +8,7 @@ public class GameInstaller : MonoInstaller
     [SerializeField] private Bullet bullerPrefab;
     [SerializeField] private Player playerPrefab;
     [SerializeField] private TimeFragment timeFragmentPrefab;
+    [SerializeField] private LevelConfig currentLevel;
     private int bulletPoolSize = 5;
     private int fragmentPoolSize = 5;
     public override void InstallBindings()
@@ -18,5 +19,7 @@ public class GameInstaller : MonoInstaller
         Container.BindInterfacesAndSelfTo<GameManager>().AsSingle();
         Container.BindMemoryPool<Bullet, Bullet.Pool>().WithInitialSize(bulletPoolSize).FromComponentInNewPrefab(bullerPrefab).UnderTransformGroup("Bullets");
         Container.BindMemoryPool<TimeFragment,TimeFragment.Pool>().WithInitialSize(fragmentPoolSize).FromComponentInNewPrefab(timeFragmentPrefab).UnderTransformGroup("TimeFragments");
+        Container.BindInterfacesTo<LevelManager>().AsSingle().NonLazy();
+        Container.BindInstance<LevelConfig>(currentLevel).AsSingle();
     }
 }

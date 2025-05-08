@@ -288,6 +288,7 @@ MonoBehaviour:
   bullerPrefab: {fileID: 7161707525484298454, guid: 4044651d34db9514184ff282b1c11be8, type: 3}
   playerPrefab: {fileID: 742697287099162710, guid: 21995bb0021e4824db4414c8743295c7, type: 3}
   timeFragmentPrefab: {fileID: 5146954456087727964, guid: e8022687e9a950445bee68ec5abfadff, type: 3}
+  currentLevel: {fileID: 11400000, guid: ce670225576932141b8a3ab9148303f0, type: 2}
 --- !u!114 &224299904
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -393,7 +394,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 807475862}
-  - component: {fileID: 807475863}
   m_Layer: 0
   m_Name: SpawnManager
   m_TagString: Untagged
@@ -408,49 +408,6 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 807475861}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1210108394}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &807475863
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 807475861}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 126c121058728544db0297985bbb493a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!1 &979148280
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 979148281}
-  m_Layer: 0
-  m_Name: EventBus
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &979148281
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 979148280}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -569,7 +526,6 @@ Transform:
   - {fileID: 544019357}
   - {fileID: 2113991418}
   - {fileID: 807475862}
-  - {fileID: 979148281}
   - {fileID: 224299902}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
