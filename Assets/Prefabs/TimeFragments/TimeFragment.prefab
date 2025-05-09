@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4540568165691383214}
   - component: {fileID: 2343396461661444601}
   - component: {fileID: 5146954456087727964}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: TimeFragment
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -46,7 +46,7 @@ CircleCollider2D:
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 24ffcc598e16d6c4793905c624802963, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -86,8 +86,8 @@ Rigidbody2D:
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_GravityScale: 0.2
+  m_AngularDamping: 0
+  m_GravityScale: 0.8
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -111,6 +111,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4822d8026ad704c49a0052b9614d9e33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  baseHeight: 0.8
+  sizeFactor: 1.5
+  horizontalKick: 2
+  upwardKick: 5
 --- !u!1 &2607489318837622462
 GameObject:
   m_ObjectHideFlags: 0
@@ -120,7 +124,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7434019873157423037}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Visual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -152,7 +156,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8590785151382757661}
   - component: {fileID: 2295189831337936133}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: SpriteRenderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}

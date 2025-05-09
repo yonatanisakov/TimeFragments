@@ -32,7 +32,7 @@ public class LevelConfig : ScriptableObject
     {
         public TimeFragment prefab;
         [Min(0.1f)] public float radius; // 0.5,1.0,1.5...
-        [Range(0, 3)] public int splitDepth; // 0 -> no split
+        [Range(0, 10)] public int splitDepth; // 0 -> no split
     }
 
     [System.Serializable]

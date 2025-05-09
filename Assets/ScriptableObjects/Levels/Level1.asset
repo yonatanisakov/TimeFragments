@@ -15,14 +15,14 @@ MonoBehaviour:
   levelName: Stage 1
   background: {fileID: 0}
   music: {fileID: 0}
-  timeLimit: 10
-  scoreToWin: 5
+  timeLimit: 0
+  scoreToWin: 0
   fragments:
-  - position: {x: 4, y: 6.6, z: 0}
+  - position: {x: 0, y: 6.6, z: 0}
     recipe:
       prefab: {fileID: 5146954456087727964, guid: e8022687e9a950445bee68ec5abfadff, type: 3}
-      radius: 2
-      splitDepth: 1
+      radius: 2.5
+      splitDepth: 4
   staticWalls: []
   hazards: []
   powerUpDrops:
