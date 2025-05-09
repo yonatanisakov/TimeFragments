@@ -1,3 +1,4 @@
+using EventBusScripts;
 using UnityEngine;
 using Zenject;
 
@@ -16,6 +17,13 @@ public class Player : MonoBehaviour
     void Update()
     {
         playerController.Tick();
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Time Fragment"))
+        {
+            EventBus.Get<PlayerGetHitEvent>().Invoke();
+        }
     }
     public class Factory : PlaceholderFactory<Player> { }
 }

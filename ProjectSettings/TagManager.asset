@@ -8,6 +8,7 @@ TagManager:
   - asteroid
   - Bullet
   - Ground
+  - Time Fragment
   layers:
   - Default
   - TransparentFX
