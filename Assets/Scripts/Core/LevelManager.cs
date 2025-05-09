@@ -5,11 +5,11 @@ using IInitializable = Zenject.IInitializable;
 using EventBus = EventBusScripts.EventBus;
 public class LevelManager : IInitializable,ITickable
 {
-    readonly LevelConfig levelConfig;
-    readonly TimeFragment.Pool fragPool;
+    readonly private LevelConfig levelConfig;
+    readonly private TimeFragment.Pool fragPool;
 
-    int fragmentRemaining;
-    float timeLeft;
+    private int fragmentRemaining;
+    private float timeLeft;
     [Inject]
     public LevelManager(LevelConfig levelConfig,TimeFragment.Pool fragPool)
     {
@@ -31,10 +31,9 @@ public class LevelManager : IInitializable,ITickable
             SpawnAt(hazardConfig.prefab, hazardConfig.position,Vector3.one);
         foreach(var fragmentConfig in levelConfig.fragments)
         {
-            var fragment = fragPool.Spawn();
-            fragment.Configure(fragmentConfig.recipe);
+            var fragment = fragPool.Spawn(fragmentConfig.recipe);
             fragment.transform.position = fragmentConfig.position;
-            fragmentRemaining++;
+            fragmentRemaining += GetNumberOfTotalFragments(fragmentConfig.recipe.splitDepth);
         }
         EventBus.Get<FragmentPoppedEvent>().Subscribe(OnFragmentPopped);
     }
@@ -55,10 +54,10 @@ public class LevelManager : IInitializable,ITickable
     {
         fragmentRemaining--;
         TryDropPowerUp(pos);
-
         if (fragmentRemaining == 0 && levelConfig.scoreToWin == 0)
         {
             EventBus.Get <LevelWinEvent>().Invoke();
+            CleanUp();
         }
     }
     void TryDropPowerUp(Vector3 pos)
@@ -77,5 +76,8 @@ public class LevelManager : IInitializable,ITickable
         if (prefab == null) return;
         var gameObject = Object.Instantiate(prefab,pos,Quaternion.identity);
         gameObject.transform.localScale = rotScale;
+    }
+    int GetNumberOfTotalFragments(int splitDepth) {
+        return ((1 << (splitDepth + 1)) - 1);
     }
 }
