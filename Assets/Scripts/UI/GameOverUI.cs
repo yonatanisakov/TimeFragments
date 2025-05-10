@@ -16,4 +16,8 @@ public class GameOverUI : MonoBehaviour
     {
         gameOverText.gameObject.SetActive(true);
     }
+    private void OnDestroy()
+    {
+        EventBus.Get<LevelFailEvent>().Unsubscribe(ShowGameOverText);
+    }
 }

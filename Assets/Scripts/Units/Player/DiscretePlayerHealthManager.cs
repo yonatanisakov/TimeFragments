@@ -9,11 +9,6 @@ public class DiscretePlayerHealthManager : IInitializable, IPlayerHealthManager,
 
     public int currentLives { get; private set; }
 
-    public void Dispose()
-    {
-        EventBus.Get<PlayerGetHitEvent>().Unsubscribe(OnPlayerHit);
-    }
-
     public void Initialize()
     {
         currentLives = maxLives;
@@ -32,5 +27,8 @@ public class DiscretePlayerHealthManager : IInitializable, IPlayerHealthManager,
                 EventBus.Get<LevelFailEvent>().Invoke();
         }
     }
-
+    public void Dispose()
+    {
+        EventBus.Get<PlayerGetHitEvent>().Unsubscribe(OnPlayerHit);
+    }
 }

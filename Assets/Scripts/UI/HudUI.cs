@@ -17,20 +17,22 @@ public class HudUI : MonoBehaviour
         this.healthManager = healthManager;
         EventBus.Get<PlayerHealthDecrease>().Subscribe(OnHealthChanged);
     }
+    private void Start()
+    {
+        HealthDisplayText(healthManager.currentLives);
 
+    }
     private void OnHealthChanged(int currentLives)
     {
         HealthDisplayText(currentLives);
     }
 
-    private void Start()
-    {
-        HealthDisplayText(healthManager.currentLives);
-    }
-
-
     private void HealthDisplayText(int currentLives)
     {
         healthText.text = $"Lives: {currentLives}";
+    }
+    private void OnDestroy()
+    {
+        EventBus.Get<PlayerHealthDecrease>().Unsubscribe(OnHealthChanged);
     }
 }
