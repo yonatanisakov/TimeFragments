@@ -12,6 +12,7 @@ public class PlayerController
     private float playerWidth;
     private Bullet.Pool bulletPool;
     private float bulletCoolDown ;
+
     public PlayerController(IPlayerInput playerInput, Transform transform,
         float moveSpeed,IBoundsService bounds,Transform playerMuzzle,Bullet.Pool bulletPool)
     {

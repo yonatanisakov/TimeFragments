@@ -2,22 +2,39 @@ using EventBusScripts;
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using Zenject;
 
-public class GameOverUI : MonoBehaviour
+public class GameOverUI : MonoBehaviour, IInitializable, IDisposable
 {
-    [SerializeField] private TMP_Text gameOverText;
+    [SerializeField] private GameObject _gameOverPanel;
+    [SerializeField] private Button _restartBtn;
+    private GameStateManager _gameStateManager;
 
-    private void Awake()
+    [Inject]
+    public void Construct(GameStateManager gameStateManager)
     {
-        EventBus.Get<LevelFailEvent>().Subscribe(ShowGameOverText);
+        _gameStateManager = gameStateManager;
+    }
+    public void Initialize()
+    {
+        _restartBtn.onClick.AddListener(OnRestart);
     }
 
-    private void ShowGameOverText()
+    public void Show()=>_gameOverPanel.SetActive(true);
+    public void Hide()=>_gameOverPanel?.SetActive(false);
+    private void OnRestart()
     {
-        gameOverText.gameObject.SetActive(true);
+        _gameStateManager.ChangeGameState(_gameStateManager.PlayingSate);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
-    private void OnDestroy()
+
+    public void Dispose()
     {
-        EventBus.Get<LevelFailEvent>().Unsubscribe(ShowGameOverText);
+        _restartBtn.onClick.RemoveListener(OnRestart);
     }
+
+
+
 }
