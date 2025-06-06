@@ -10,31 +10,34 @@ public class GameOverUI : MonoBehaviour, IInitializable, IDisposable
 {
     [SerializeField] private GameObject _gameOverPanel;
     [SerializeField] private Button _restartBtn;
-    private GameStateManager _gameStateManager;
 
-    [Inject]
-    public void Construct(GameStateManager gameStateManager)
-    {
-        _gameStateManager = gameStateManager;
-    }
+    private Action _onRestartCallback;
+
+
     public void Initialize()
     {
-        _restartBtn.onClick.AddListener(OnRestart);
+        _restartBtn.onClick.AddListener(OnRestartClicked);
     }
 
-    public void Show()=>_gameOverPanel.SetActive(true);
-    public void Hide()=>_gameOverPanel?.SetActive(false);
-    private void OnRestart()
+    public void Show()
     {
-        _gameStateManager.ChangeGameState(_gameStateManager.PlayingSate);
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        if (_gameOverPanel != null)
+        {
+            _gameOverPanel.SetActive(true);
+        }
     }
+    public void Hide()
+    {
+        if (_gameOverPanel != null)
+            _gameOverPanel.SetActive(false);
+    }
+
+    public void SetRestartCallback(Action callback) => _onRestartCallback = callback;
+    private void OnRestartClicked() => _onRestartCallback?.Invoke();
 
     public void Dispose()
     {
-        _restartBtn.onClick.RemoveListener(OnRestart);
+        _restartBtn.onClick.RemoveListener(OnRestartClicked);
+        _onRestartCallback = null;
     }
-
-
-
 }

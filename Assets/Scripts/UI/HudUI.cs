@@ -1,38 +1,38 @@
 using EventBusScripts;
 using System;
 using TMPro;
+using UnityEditor.Search;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
 using Zenject;
 
-public class HudUI : MonoBehaviour
+public class HudUI : MonoBehaviour,IInitializable
 {
 
-    [SerializeField] private TMP_Text healthText;
-    IPlayerHealthManager healthManager;
-
-    [Inject]
-    public void Construct(IPlayerHealthManager healthManager)
+    [SerializeField] private TMP_Text _healthText;
+    [SerializeField] private GameObject _hudPanel;
+    public void Initialize()
     {
-        this.healthManager = healthManager;
-        EventBus.Get<PlayerHealthDecrease>().Subscribe(OnHealthChanged);
-    }
-    private void Start()
-    {
-        HealthDisplayText(healthManager.currentLives);
-
-    }
-    private void OnHealthChanged(int currentLives)
-    {
-        HealthDisplayText(currentLives);
+        Show();
     }
 
-    private void HealthDisplayText(int currentLives)
+    public void Show()
     {
-        healthText.text = $"Lives: {currentLives}";
+        if(_hudPanel != null)
+            _hudPanel.SetActive(true);
     }
-    private void OnDestroy()
+    public void Hide()
     {
-        EventBus.Get<PlayerHealthDecrease>().Unsubscribe(OnHealthChanged);
+        if (_hudPanel != null)
+            _hudPanel.SetActive(false);
     }
+
+    public void UpdateHealthDisplay(int currentLives)
+    {
+        if (_healthText != null)
+            _healthText.text = $"Lives: {currentLives}";
+    }
+
+
 }

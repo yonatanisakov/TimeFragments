@@ -2,11 +2,11 @@ using UnityEngine;
 
 public class PauseGameState : IGameState
 {
-    private readonly GameStateManager _gameStateManager;
+    private readonly IGameController _gameController;
 
-    public PauseGameState(GameStateManager gameStateManager)
+    public PauseGameState(IGameController gameController)
     {
-        _gameStateManager = gameStateManager;
+        _gameController = gameController;
     }
     public void Enter()
     {

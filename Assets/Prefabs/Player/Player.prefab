@@ -47,8 +47,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5faefcf87f105d746a13ae5d33dea393, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
-  muzzle: {fileID: 2889774619134890707}
+  _speed: 5
+  _muzzle: {fileID: 2889774619134890707}
+  shootCoolDown: 0.2
 --- !u!61 &6009985460263538965
 BoxCollider2D:
   m_ObjectHideFlags: 0

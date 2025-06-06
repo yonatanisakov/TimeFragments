@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class PlayingState : IGameState
 {
-    private readonly GameStateManager _gameStateManager;
+    private readonly IGameController _gameController;
 
-    public PlayingState(GameStateManager gameStateManager)
+    public PlayingState(IGameController gameController)
     {
-        _gameStateManager = gameStateManager;
+        _gameController = gameController;
     }
     public void Enter()
     {
@@ -28,6 +28,6 @@ public class PlayingState : IGameState
 
     private void OnLevelFail()
     {
-        _gameStateManager.ChangeGameState(_gameStateManager.GameOverSate);
+        _gameController.GameStateMachine.ChangeGameState(_gameController.GameStateMachine.GameOverState);
     }
 }

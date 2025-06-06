@@ -1,103 +1,67 @@
-using EventBusScripts;
-using System;
-using Unity.VisualScripting;
 using UnityEngine;
 using Zenject;
-using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 using EventBus = EventBusScripts.EventBus;
-using Random = UnityEngine.Random;
 
 public class TimeFragment : MonoBehaviour
 {
-    private const int SPLIT_SIZE = 2;
+    [SerializeField] private float _baseHeight;
+    [SerializeField] private float _sizeFactor;
+    [SerializeField] private float _horizontalKick;
+    [SerializeField] private float _upwardKick;
 
-    private IBoundsService boundsService;
-    private int splitDepth;
-    private float radius;
-    private TimeFragment.Pool fragPool;
-    private Rigidbody2D rb;
-    private float velocityBounce;
-    [SerializeField] float baseHeight;
-    [SerializeField] float sizeFactor;
-    [SerializeField] float horizontalKick;
-    [SerializeField] float upwardKick;
+
+    private IFragmentPhysics _fragmentPhysics;
+    private IFragmentSplitter _fragmentSplitter;
+    private Bullet.Pool _bulletPool;
+    private Rigidbody2D _rb;
+
+    private float _targetBounceVelocity;
+    private int _splitDepth;
+    private float _radius;
 
     [Inject]
-    public void Construct(IBoundsService boundsService, TimeFragment.Pool fragPool)
+    public void Construct(IFragmentPhysics fragmentPhysics, IFragmentSplitter fragmentSplitter,Bullet.Pool bulletPool)
     {
-        this.boundsService = boundsService;
-        this.fragPool = fragPool;
-        rb = GetComponent<Rigidbody2D>();
-        
+        _fragmentPhysics = fragmentPhysics;
+        _fragmentSplitter = fragmentSplitter;
+        _bulletPool = bulletPool;
+        _rb = GetComponent<Rigidbody2D>();
     }
-
-
 
     void FixedUpdate()
     {
-        var v = rb.linearVelocity;
-
-        if (transform.position.x <= boundsService.minX + radius / 2)
-            v.x = Mathf.Abs(v.x);
-
-        if (transform.position.x >= boundsService.maxX - radius / 2)
-            v.x = -Mathf.Abs(v.x);
-
-        rb.linearVelocity = v;
+        _fragmentPhysics.HandleBoundsCollision(transform, _rb, _radius);
     }
     public void Configure(LevelConfig.FragmentRecipe fragmentRecipe)
     {
-        splitDepth = fragmentRecipe.splitDepth;
-        radius = fragmentRecipe.radius;
-        transform.localScale = new Vector3(radius, radius, 0);
-        velocityBounce = CalculateFragmentBounceVelocity();
-    }
-    private float CalculateFragmentBounceVelocity()
-    {
-        float g = Mathf.Abs(Physics2D.gravity.y);
-        float targetH = baseHeight + radius * sizeFactor;
-        return Mathf.Sqrt(2f * targetH * g);
+        _splitDepth = fragmentRecipe.splitDepth;
+        _radius = fragmentRecipe.radius;
+        transform.localScale = new Vector3(_radius, _radius, 0);
+        _targetBounceVelocity = _fragmentPhysics.CalculateBounceVelocity(_baseHeight, _radius, _sizeFactor);
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Bullet"))
         {
-            PopFragment();
-            collision.gameObject.SetActive(false);
+            Bullet collidedBullet = collision.gameObject.GetComponent<Bullet>();
+            _bulletPool.Despawn(collidedBullet);
+            HandleBulletHit();
         }
         if (collision.gameObject.CompareTag("Ground"))
         {
-            if (rb.linearVelocity.y < velocityBounce)
-            {
-                rb.linearVelocity = new Vector2(rb.linearVelocity.x, velocityBounce);
-            }
+            _fragmentPhysics.HandleGroundBounce(_rb, _targetBounceVelocity);
         }
     }
-    private void PopFragment()
+    private void HandleBulletHit()
     {
 
         EventBus.Get<FragmentPoppedEvent>().Invoke(transform.position);
-
-        if (splitDepth > 0)
+        var recipe = new LevelConfig.FragmentRecipe
         {
-
-            for (int i = 0; i < SPLIT_SIZE; i++)
-            {
-                SpawnChild(i == 0 ? -1 : 1);
-            }
-        }
-        fragPool.Despawn(this);
-    }
-
-    private void SpawnChild(int direction)
-    {
-        var child = fragPool.Spawn(new LevelConfig.FragmentRecipe
-        {
-            splitDepth = this.splitDepth - 1,
-            radius = this.radius - 0.5f,
-        });
-        child.transform.position = transform.position;
-        child.rb.AddForce(new Vector2(direction * horizontalKick, upwardKick + radius), ForceMode2D.Impulse);
+            splitDepth = _splitDepth,
+            radius = _radius,
+        };
+        _fragmentSplitter.SplitFragment(this, recipe, transform.position, _horizontalKick, _upwardKick);
     }
 
     public class Pool : MonoMemoryPool<LevelConfig.FragmentRecipe, TimeFragment>
