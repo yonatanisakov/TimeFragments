@@ -44,6 +44,17 @@ public class TimeFragment : MonoBehaviour
         if (collision.gameObject.CompareTag("Bullet"))
         {
             Bullet collidedBullet = collision.gameObject.GetComponent<Bullet>();
+            if (collidedBullet == null)
+            {
+                Debug.Log("Bullet component is null!");
+                return;
+            }
+
+            if (!collidedBullet.gameObject.activeInHierarchy)
+            {
+                Debug.Log("Bullet already inactive, skipping");
+                return;
+            }
             _bulletPool.Despawn(collidedBullet);
             HandleBulletHit();
         }
