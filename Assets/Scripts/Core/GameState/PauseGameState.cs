@@ -15,15 +15,13 @@ public class PauseGameState : IGameState
 
     public void Exit()
     {
-        Time.timeScale = 1f;
     }
 
     public void Update()
     {
-        if (Input.GetKeyUp(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-
-
+            _gameController.GameStateMachine.ChangeGameState(_gameController.GameStateMachine.PlayingState);
         }
     }
 }

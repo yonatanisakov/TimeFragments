@@ -19,7 +19,7 @@ public class LevelInitializer : ILevelInitializer
             AudioSource.PlayClipAtPoint(levelConfig.music, Vector3.zero);
 
         foreach(var wallConfig in levelConfig.staticWalls)
-            _gameObjectFactory.Create(wallConfig.prefab,wallConfig.position,Quaternion.identity,wallConfig.rotationScale);
+            _gameObjectFactory.Create(wallConfig.prefab,wallConfig.position,Quaternion.identity,wallConfig.scale);
 
         foreach (var hazardConfig in levelConfig.hazards)
             _gameObjectFactory.Create(hazardConfig.prefab, hazardConfig.position, Quaternion.identity);

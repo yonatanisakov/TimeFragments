@@ -5,10 +5,19 @@ public class LevelConfig : ScriptableObject
 {
     [Header("Meta & Presentation")]
     public string levelName = "Stage 1";
+    [Tooltip("Index of this level in the world (0-based: 0, 1, 2, 3, 4...)")]
+    public int levelIndex = 0;  // ADD THIS LINE
     public Sprite background;
     public AudioClip music;
     public float timeLimit = 0f; // 0 -> no timer
-    public int scoreToWin = 0; // 0-> pop all fragments
+
+    [Header("Star Rating System")]
+    [Tooltip("Maximum possible score for this level (calculated automatically if 0)")]
+    public int maxPossibleScore = 0;
+    [Tooltip("Score needed for 2 stars (70% of max if 0)")]
+    public int twoStarThreshold = 0;
+    [Tooltip("Score needed for 3 stars (90% of max if 0)")]
+    public int threeStarThreshold = 0;
 
     [Header("Fragment Setup")]
     public FragmentSpawn[] fragments;
@@ -40,7 +49,7 @@ public class LevelConfig : ScriptableObject
     {
         public GameObject prefab; // any static collide tile, WILL REPLACE WITH SPECIFIC WallPiece GameObject
         public Vector3 position;
-        public Vector3 rotationScale;
+        public Vector3 scale;
     }
     [System.Serializable]
     public struct DynamicHazardSpawn

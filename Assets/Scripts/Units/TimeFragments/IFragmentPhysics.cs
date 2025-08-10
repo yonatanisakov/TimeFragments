@@ -5,9 +5,12 @@ using UnityEngine;
 /// </summary>
 public interface IFragmentPhysics
 {
-    void HandleBoundsCollision(Transform fragmentTransform, Rigidbody2D rb, float radius);
-    void HandleGroundBounce(Rigidbody2D rb, float targetBounceVelocity);
-    float CalculateBounceVelocity(float baseHeight, float radius, float sizeFactor);
+    void ApplyBoundsPhysics(TimeFragment fragment);
+    void ApplyGroundBounce(TimeFragment fragment);
+    void ApplyWallBounce(TimeFragment fragment);
     void ApplySplitForce(Rigidbody2D rb, int direction, float horizontalKick, float upwardKick, float radius);
+
+
+    float CalculateBounceVelocity(float baseHeight, float radius, float sizeFactor);
 
 }

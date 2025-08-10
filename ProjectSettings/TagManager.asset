@@ -9,6 +9,8 @@ TagManager:
   - Bullet
   - Ground
   - Time Fragment
+  - Wall
+  - PowerUp
   layers:
   - Default
   - TransparentFX
@@ -17,9 +19,9 @@ TagManager:
   - Water
   - UI
   - Fagment
-  - 
-  - 
-  - 
+  - PlayerCollider
+  - PlayerTrigger
+  - Wall
   - 
   - 
   - 

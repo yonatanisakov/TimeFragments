@@ -1,4 +1,5 @@
 using EventBusScripts;
+using System;
 using System.Net;
 using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
@@ -9,7 +10,7 @@ public class Player : MonoBehaviour
 {
     [SerializeField] private float _speed = 5;
     [SerializeField] private Transform _muzzle;
-    [SerializeField] private float _shootCoolDown = 0.2f;
+    [SerializeField] private float _shootCoolDown = 3f;
 
     private IPlayerMovement _playerMovement;
     private IPlayerWeapon _playerWeapon;
@@ -28,7 +29,18 @@ public class Player : MonoBehaviour
         // Configure the injected services with this player's specific data
         _playerMovement.Initialize(transform, _speed);
         _playerWeapon.Initialize(_shootCoolDown, _muzzle);
+
+        EventBus.Get<BulletHitFragmentEvent>().Subscribe(OnBulletHitFragmwnt);
     }
+    private void OnDestroy()
+    {
+        EventBus.Get<BulletHitFragmentEvent>().Unsubscribe(OnBulletHitFragmwnt);
+    }
+    private void OnBulletHitFragmwnt()
+    {
+        _playerWeapon.CancelCooldown();
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -39,13 +51,6 @@ public class Player : MonoBehaviour
         if (_playerInput.ShootInput)
         {
             _playerWeapon.TryShoot();
-        }
-    }
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.gameObject.CompareTag("Time Fragment"))
-        {
-            EventBus.Get<PlayerGetHitEvent>().Invoke();
         }
     }
     public class Factory : PlaceholderFactory<Player> { }

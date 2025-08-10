@@ -13,21 +13,17 @@ public class PlayingState : IGameState
     public void Enter()
     {
         Time.timeScale = 1.0f;
-        EventBus.Get<LevelFailEvent>().Subscribe(OnLevelFail);
     }
     public void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            _gameController.GameStateMachine.ChangeGameState(_gameController.GameStateMachine.PauseGameState);
+        }
+
     }
 
     public void Exit()
     {
-        EventBus.Get<LevelFailEvent>().Unsubscribe(OnLevelFail);
-    }
-
-
-
-    private void OnLevelFail()
-    {
-        _gameController.GameStateMachine.ChangeGameState(_gameController.GameStateMachine.GameOverState);
     }
 }

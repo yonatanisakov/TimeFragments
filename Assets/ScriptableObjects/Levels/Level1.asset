@@ -12,17 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c51ca15c4a6b6434189cadc4c73cc766, type: 3}
   m_Name: Level1
   m_EditorClassIdentifier: 
-  levelName: Stage 1
+  levelName: First Shot
   background: {fileID: 0}
   music: {fileID: 0}
-  timeLimit: 0
+  timeLimit: 60
   scoreToWin: 0
   fragments:
-  - position: {x: 0, y: 6.6, z: 0}
+  - position: {x: 0, y: 6.5, z: 0}
     recipe:
       prefab: {fileID: 5146954456087727964, guid: e8022687e9a950445bee68ec5abfadff, type: 3}
-      radius: 2.5
-      splitDepth: 4
+      radius: 0.5
+      splitDepth: 0
   staticWalls: []
   hazards: []
   powerUpDrops:

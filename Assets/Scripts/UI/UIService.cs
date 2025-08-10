@@ -1,31 +1,23 @@
 
 using System;
+using UnityEngine;
 
 public class UIService : IUIService
 {
-    private readonly GameOverUI _gameOverUI;
-    private readonly HudUI _hudUI;
+    private readonly ResultsUI _resultsUI;
+    private readonly BottomHudUI _hudUI;
 
-
-    public UIService(GameOverUI gameOverUI, HudUI hudUI)
+    public UIService(ResultsUI resultsUI, BottomHudUI hudUI)
     {
-        _gameOverUI = gameOverUI;
+        _resultsUI = resultsUI;
         _hudUI = hudUI;
     }
 
-    public void HideGameOverUI()
+    public void HideResultsUI()
     {
-        _gameOverUI.Hide();
+        _resultsUI.Hide();
     }
 
-
-
-    public void ShowGameOverUI(Action onRestartCallBack)
-    {
-        _gameOverUI.SetRestartCallback(onRestartCallBack);
-        _gameOverUI.Show();
-
-    }
     public void HideHudUI()
     {
         _hudUI.Hide();
@@ -35,8 +27,43 @@ public class UIService : IUIService
         _hudUI.Show();
     }
 
-    public void UpdateHealthDisplay(int currentLives)
+    public void UpdateHealthDisplay(bool increaseLife)
     {
-        _hudUI.UpdateHealthDisplay(currentLives);
+        if (increaseLife)
+            _hudUI.AddHearth();
+        else
+            _hudUI.RemoveHearth();
+    }
+
+    public void InitHealthDisplay(int lives)
+    {
+        for (int i = 0; i < lives; i++)
+            _hudUI.AddHearth();
+    }
+
+    public void InitTimer(float time)
+    {
+        _hudUI.InitTimer(time);
+    }
+
+    public void UpdateTimer(float time)
+    {
+        _hudUI.UpdateTimer(time);
+    }
+
+    public void UpdateScore(int score)
+    {
+        _hudUI.UpdateScore(score);
+    }
+
+    public void InitScore()
+    {
+        _hudUI.UpdateScore(0);
+    }
+
+    public void ShowFloatingText(string text, Vector3 worldPosition, Color color)
+    {
+        // TODO: Implement floating text system for combo multipliers
+        // This will show combo text at fragment impact locations
     }
 }
