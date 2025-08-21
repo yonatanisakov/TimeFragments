@@ -9,7 +9,7 @@ public class TimeFragment : MonoBehaviour
     [SerializeField] private float _sizeFactor;
     [SerializeField] private float _horizontalKick;
     [SerializeField] private float _upwardKick;
-
+    [SerializeField] private Transform _visualRoot;
     private IFragmentPhysics _fragmentPhysics;
     private IFragmentCollisionHandler _fragmentCollisionHandler;
     private IFragmentTimeScaleService _fragmentTimeScaleService;
@@ -23,7 +23,7 @@ public class TimeFragment : MonoBehaviour
     public Collision2D LastCollision { get; private set; }
     public int SplitDepth { get; private set; }
     public float Radius { get; private set; }
-
+    public TimeFragment SkinPrefab { get; private set; }
     public float HorizontalKick => _horizontalKick;
     public float UpwardKick => _upwardKick;
 
@@ -48,12 +48,19 @@ public class TimeFragment : MonoBehaviour
     {
         EventBus.Get<TimeScaleChangedEvent>().Subscribe(OnTimeScaleChanged);
 
+        if (fragmentRecipe.prefab != null)
+        {
+            SkinPrefab = fragmentRecipe.prefab;
+            ApplyVisualFromRecipe(fragmentRecipe); 
+        }
         SplitDepth = fragmentRecipe.splitDepth;
         Radius = fragmentRecipe.radius;
         transform.localScale = new Vector3(Radius, Radius, 0);
+
         TargetBounceVelocity = _fragmentPhysics.CalculateBounceVelocity(_baseHeight, Radius, _sizeFactor);
         _baseBounceVelocity = TargetBounceVelocity;
         _currentScale = 1f;
+
         if (_fragmentTimeScaleService.IsSlowMotionActive)
         {
             ApplyTimeScale(_fragmentTimeScaleService.CurrentFragmentTimeScale);
@@ -77,7 +84,23 @@ public class TimeFragment : MonoBehaviour
 
     private void OnTimeScaleChanged(TimeScaleData d) =>
             ApplyTimeScale(d.isApply ? d.fragmentTimeScale : 1f);
+    private Transform VisualRoot =>
+    _visualRoot != null ? _visualRoot :
+    transform.Find("VisualRoot") ?? transform;
+    private void ApplyVisualFromRecipe(LevelConfig.FragmentRecipe recipe)
+    {
+        if (recipe.prefab == null) return;
 
+        var prefab = recipe.prefab.gameObject;
+
+        var srcRoot = prefab.transform.Find("VisualRoot") ?? prefab.transform;
+
+        for (int i = VisualRoot.childCount - 1; i >= 0; i--)
+            Destroy(VisualRoot.GetChild(i).gameObject);
+
+        foreach (Transform child in srcRoot)
+            Instantiate(child.gameObject, VisualRoot, false);
+    }
     private void OnDestroy()
     {
         EventBus.Get<TimeScaleChangedEvent>().Unsubscribe(OnTimeScaleChanged);

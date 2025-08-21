@@ -36,19 +36,20 @@ public class FragmentSplitter : IFragmentSplitter
             for (int i = 0; i < SPLIT_SIZE; i++)
             {
                 direction = -1 * direction;
-                var childFragment = SpawnChild(fragmentRecipe, position);
+                var childFragment = SpawnChild(currentFragment, fragmentRecipe, position);
                 var childRb = childFragment.GetComponent<Rigidbody2D>();
                 _fragmentPhysics.ApplySplitForce(childRb, direction, horizontalKick, upwardKick, fragmentRecipe.radius);
             }
         }
         
     }
-    private TimeFragment SpawnChild(LevelConfig.FragmentRecipe fragmentRecipe, Vector3 position)
+    private TimeFragment SpawnChild(TimeFragment parent, LevelConfig.FragmentRecipe fragmentRecipe, Vector3 position)
     {
         var child = _fragmentPool.Spawn(new LevelConfig.FragmentRecipe
         {
             splitDepth = fragmentRecipe.splitDepth - 1,
             radius = fragmentRecipe.radius - RADIUS_REDUCTION_PER_SPLIT,
+            prefab = parent.SkinPrefab ?? fragmentRecipe.prefab,
         });
         child.transform.position = position;
         return child;

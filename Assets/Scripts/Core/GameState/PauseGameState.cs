@@ -11,17 +11,19 @@ public class PauseGameState : IGameState
     public void Enter()
     {
         Time.timeScale = 0f;
+        _gameController.RequestPause();
     }
 
     public void Exit()
     {
+        Time.timeScale = 1f;
     }
 
     public void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            _gameController.GameStateMachine.ChangeGameState(_gameController.GameStateMachine.PlayingState);
+            _gameController?.ResumeFromPause();
         }
     }
 }

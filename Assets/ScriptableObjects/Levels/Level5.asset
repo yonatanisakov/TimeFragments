@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelName: Big Boss
   levelIndex: 4
-  background: {fileID: 0}
+  background: {fileID: 8502473614906710646, guid: 3ca20957bbf94ab488be43e134ec3a94, type: 3}
   music: {fileID: 0}
   timeLimit: 60
   maxPossibleScore: 0
@@ -23,17 +23,17 @@ MonoBehaviour:
   fragments:
   - position: {x: 0, y: 6.55, z: 0}
     recipe:
-      prefab: {fileID: 5146954456087727964, guid: e8022687e9a950445bee68ec5abfadff, type: 3}
-      radius: 1.5
-      splitDepth: 2
+      prefab: {fileID: 5146954456087727964, guid: 24dc6e8457ccf634384c381ce45b6e6c, type: 3}
+      radius: 2
+      splitDepth: 3
   staticWalls:
   - prefab: {fileID: 5770815906475378622, guid: 377badc2401ccdd4fbe296988f66282a, type: 3}
-    position: {x: -2.62, y: 1.51, z: 0}
-    scale: {x: 0.363, y: 8.9, z: 0}
+    position: {x: -2.58, y: 0.52, z: 0}
+    scale: {x: 0.363, y: 7.08, z: 0}
   - prefab: {fileID: 5770815906475378622, guid: 377badc2401ccdd4fbe296988f66282a, type: 3}
-    position: {x: 2.62, y: 1.51, z: 0}
-    scale: {x: 0.363, y: 8.9, z: 0}
+    position: {x: 2.58, y: 0.52, z: 0}
+    scale: {x: 0.363, y: 7.08, z: 0}
   hazards: []
   powerUpDrops:
     prefab: {fileID: 3551949266175357073, guid: 67e89f57e02ea924299611a8602e9a58, type: 3}
-    dropChanceEach: 1
+    dropChanceEach: 0.25

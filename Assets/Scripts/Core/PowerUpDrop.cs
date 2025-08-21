@@ -10,7 +10,7 @@ public class PowerUpDrop : IPowerUpDrop
     private readonly IBoundsService _boundsService;
     private readonly PowerUpConfig _powerUpConfig;
     private IPowerUpLifetimeManager _lifetimeManager;
-
+    const float GroundPadding = 0.25f;
     public PowerUpDrop(IGameObjectFactory gameObjectFactory, IBoundsService boundsService, PowerUpConfig powerUpConfig, IPowerUpLifetimeManager lifetimeManager)
     {
         _gameObjectFactory = gameObjectFactory;
@@ -45,7 +45,7 @@ public class PowerUpDrop : IPowerUpDrop
                 Debug.Log($"Effective bounds - Width: {effectiveHalfWidth}, Height: {effectiveHalfHeight}");
 
                 // Position with proper offsets
-                var properY = _boundsService.minY + effectiveHalfHeight;
+                var properY = _boundsService.minY + effectiveHalfHeight + GroundPadding;
                 var randomX = GetSafeRandomXPosition(effectiveHalfWidth);
                 var finalPosition = new Vector3(randomX, properY, position.z);
 

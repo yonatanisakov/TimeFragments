@@ -17,3 +17,15 @@ MonoBehaviour:
     icon: {fileID: 21300000, guid: 467e6a5c1ab131a4897f8590e2b90239, type: 3}
     displayName: Slow Motion
     description: 
+  - powerUpType: 0
+    icon: {fileID: 21300000, guid: 78dc0342c850b19478b28710f6a37bfc, type: 3}
+    displayName: Shield
+    description: 
+  - powerUpType: 2
+    icon: {fileID: 21300000, guid: 68f0147eb82dcda4294222874d7823b5, type: 3}
+    displayName: Magnet
+    description: 
+  - powerUpType: 4
+    icon: {fileID: 21300000, guid: 6defad65e8ea5604487451ba3c775b52, type: 3}
+    displayName: Slow Motion
+    description: 

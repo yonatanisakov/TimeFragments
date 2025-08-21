@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77011b3b8176be947ba3cb3925f63806, type: 3}
   m_Name: World1
   m_EditorClassIdentifier: 
-  worldName: Time Fragments
+  worldName: World 1 - Welcome
   worldIcon: {fileID: 0}
   worldColor: {r: 0, g: 0, b: 1, a: 1}
   starsRequiredToUnlock: 0

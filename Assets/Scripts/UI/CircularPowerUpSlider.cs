@@ -52,7 +52,10 @@ public class CircularPowerUpSlider : MonoBehaviour
             else if (progress > 0.25f)
                 _borderImage.color = _halfTimeColor;
             else
+            {
+                SFXBus.I?.PlayPowerupExpire();
                 _borderImage.color = _lowTimeColor;
+            }
         }
     }
 }

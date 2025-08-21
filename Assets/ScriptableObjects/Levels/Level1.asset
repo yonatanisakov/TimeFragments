@@ -13,10 +13,13 @@ MonoBehaviour:
   m_Name: Level1
   m_EditorClassIdentifier: 
   levelName: First Shot
-  background: {fileID: 0}
+  levelIndex: 0
+  background: {fileID: 5501988915683509518, guid: 5b4d4cc3df548d640ab0d910be6d4761, type: 3}
   music: {fileID: 0}
   timeLimit: 60
-  scoreToWin: 0
+  maxPossibleScore: 0
+  twoStarThreshold: 0
+  threeStarThreshold: 0
   fragments:
   - position: {x: 0, y: 6.5, z: 0}
     recipe:
@@ -26,5 +29,5 @@ MonoBehaviour:
   staticWalls: []
   hazards: []
   powerUpDrops:
-    prefab: {fileID: 0}
-    dropChanceEach: 0
+    prefab: {fileID: 3551949266175357073, guid: 67e89f57e02ea924299611a8602e9a58, type: 3}
+    dropChanceEach: 0.25

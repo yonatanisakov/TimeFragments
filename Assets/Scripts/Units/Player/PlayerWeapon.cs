@@ -39,6 +39,9 @@ public class PlayerWeapon : IPlayerWeapon
             _muzzleAnimator?.SetTrigger("Shoot");
 
             SetCooldown();
+            SFXBus.I?.PlayShoot();
+
+
         }
 
     }

@@ -1,4 +1,5 @@
 using EventBusScripts;
+using System.Collections;
 using UnityEngine;
 using Zenject;
 
@@ -21,7 +22,16 @@ public class PowerUpCollectible : MonoBehaviour
     [SerializeField] private SpriteRenderer _borderRenderer;
     [SerializeField] private Color _goodPowerUpBorderColor = Color.green;
     [SerializeField] private Color _badPowerUpBorderColor = Color.red;
+    [Header("Collect FX")]
+    [SerializeField] private bool _flyToUI = true;
+    [SerializeField] private string _uiAnchorTag = "PowerUpUIAnchor";
+    [SerializeField] private float _burstScale = 1.3f;      
+    [SerializeField] private float _burstDuration = 0.12f;  
+    [SerializeField] private float _flyDuration = 0.45f;   
+    [SerializeField] private AnimationCurve _burstEase = AnimationCurve.EaseInOut(0, 0, 1, 1);
+    [SerializeField] private AnimationCurve _flyEase = AnimationCurve.EaseInOut(0, 0, 1, 1);
 
+    bool _isCollectingFx;
     private Vector3 _startPosition;
     private SpriteRenderer _spriteRenderer;
     private float _baseHalfHeight;
@@ -187,15 +197,19 @@ public class PowerUpCollectible : MonoBehaviour
     /// </summary>
     public void Collect()
     {
+        if (_isCollectingFx) return;
+        _isCollectingFx = true;
         // Unregister from lifetime manager
         if (_lifetimeManager != null && _isRegisteredWithLifetime)
         {
             _lifetimeManager.UnregisterPowerUp(this);
             _isRegisteredWithLifetime = false;
         }
+        var col = GetComponent<Collider2D>();
+        if (col) col.enabled = false;
 
-        // Destroy immediately - power-ups are one-time use
-        Destroy(gameObject);
+        StartCoroutine(CollectSequence());
+
     }
     private void SetBorderColor()
     {
@@ -311,6 +325,70 @@ public class PowerUpCollectible : MonoBehaviour
 
         // The lifetime manager will destroy this GameObject
         // This handler exists for potential final effects before destruction
+    }
+
+    private IEnumerator CollectSequence()
+    {
+        var sr = _spriteRenderer;
+        var border = _borderRenderer;
+
+        Vector3 startScale = transform.localScale;
+        Vector3 burstScale = startScale * _burstScale;
+
+        // 1) Scale Burst
+        float t = 0f;
+        while (t < _burstDuration)
+        {
+            t += Time.deltaTime;
+            float k = _burstEase.Evaluate(Mathf.Clamp01(t / _burstDuration));
+            transform.localScale = Vector3.LerpUnclamped(startScale, burstScale, k);
+            yield return null;
+        }
+
+        // 2) Fly-to-UI (אופציונלי)
+        if (_flyToUI)
+        {
+            Camera cam = Camera.main;
+            var anchorGo = GameObject.FindWithTag(_uiAnchorTag);
+            if (cam != null && anchorGo != null)
+            {
+                // המרה מ-UI (מסך) לעולם
+                Vector3 screenPos = anchorGo.transform.position; // עובד גם ב-Screen Space Overlay/Camera
+                Vector3 targetWorld = cam.ScreenToWorldPoint(new Vector3(screenPos.x, screenPos.y, -cam.transform.position.z));
+                targetWorld.z = transform.position.z;
+
+                Vector3 fromPos = transform.position;
+                Vector3 fromScale = transform.localScale;
+
+                Color srFrom = sr ? sr.color : Color.white;
+                Color borderFrom = border ? border.color : Color.white;
+
+                t = 0f;
+                while (t < _flyDuration)
+                {
+                    t += Time.deltaTime;
+                    float k = _flyEase.Evaluate(Mathf.Clamp01(t / _flyDuration));
+
+                    transform.position = Vector3.LerpUnclamped(fromPos, targetWorld, k);
+                    transform.localScale = Vector3.LerpUnclamped(fromScale, startScale * 0.6f, k);
+
+                    if (sr)
+                    {
+                        var c = srFrom; c.a = Mathf.Lerp(1f, 0f, k);
+                        sr.color = c;
+                    }
+                    if (border)
+                    {
+                        var c2 = borderFrom; c2.a = Mathf.Lerp(1f, 0.2f, k);
+                        border.color = c2;
+                    }
+                    yield return null;
+                }
+            }
+        }
+
+        // 3) סיום
+        Destroy(gameObject);
     }
 
     #endregion

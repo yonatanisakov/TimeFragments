@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelName: Double Trouble
   levelIndex: 1
-  background: {fileID: 0}
+  background: {fileID: 5485999284313161961, guid: 9ba829ce238bfa642881186d60c76087, type: 3}
   music: {fileID: 0}
   timeLimit: 60
   maxPossibleScore: 0
@@ -34,5 +34,5 @@ MonoBehaviour:
   staticWalls: []
   hazards: []
   powerUpDrops:
-    prefab: {fileID: 0}
-    dropChanceEach: 0
+    prefab: {fileID: 3551949266175357073, guid: 67e89f57e02ea924299611a8602e9a58, type: 3}
+    dropChanceEach: 0.25

@@ -1,10 +1,9 @@
-
 using System;
 using UnityEngine;
 
 public interface IUIService
 {
-    // bottomHUD UI
+    // ========== HUD ==========
     void ShowHudUI();
     void HideHudUI();
     void InitHealthDisplay(int lives);
@@ -14,10 +13,16 @@ public interface IUIService
     void UpdateScore(int score);
     void InitScore();
 
-    // Unified Results UI (handles both win/lose)
+    // ========== RESULTS ==========
+    // ה-Controller מזרים Delegates לפני הצגה, וה-ResultsUI יפעיל אותם בלחיצת כפתור
+    void SetResultsHandlers(Action onRestart, Action onMainMenu, Action onNextLevel);
     void HideResultsUI();
 
-    //  Floating Text Effects (for future combo display)
-    void ShowFloatingText(string text, Vector3 worldPosition, Color color);
+    // ========== PAUSE ==========
+    bool IsPauseWindowOpen { get; }
+    void ShowPauseWindow(Action onResume, Action onRestart, Action onSettings, Action onQuit);
+    void HidePauseWindow();
 
+    // ========== FX ==========
+    public void ShowFloatingTextFollow(string text, Transform followTarget, Color color);
 }

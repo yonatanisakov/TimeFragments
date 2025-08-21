@@ -24,7 +24,7 @@ public class GameInstaller : MonoInstaller
         Container.Bind<ILevelInitializer>().To<LevelInitializer>().AsSingle();
         Container.Bind<IPowerUpDrop>().To<PowerUpDrop>().AsSingle();
         Container.Bind<IPlayerSpawner>().To<PlayerSpawner>().AsSingle();
-        Container.Bind<IScoreService>().To<ScoreService>().AsSingle();
+        Container.BindInterfacesAndSelfTo<ScoreService>().AsSingle();
         Container.Bind<IStatisticsService>().To<StatisticsService>().AsSingle();
         Container.Bind<IProgressionService>().To<ProgressionService>().AsSingle();
         Container.BindInterfacesTo<PlayerMovement>().AsTransient();
@@ -39,6 +39,8 @@ public class GameInstaller : MonoInstaller
         Container.Bind<IUIService>().To<UIService>().AsSingle();
         Container.BindInterfacesAndSelfTo<ResultsUI>().FromComponentInHierarchy().AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<BottomHudUI>().FromComponentInHierarchy().AsSingle().NonLazy();
+        Container.BindInterfacesAndSelfTo<PauseWindowUI>().FromComponentInHierarchy().AsSingle().NonLazy();
+        Container.Bind<ComboPopupWidget>().FromComponentInHierarchy().AsSingle();
         Container.Bind<IBulletMovement>().To<BulletMovement>().AsSingle();
         Container.BindInterfacesAndSelfTo<GameController>().AsSingle().NonLazy();
         Container.Bind<IBulletCollisionHandler>().To<BulletCollisionHandler>().AsSingle();
@@ -49,6 +51,8 @@ public class GameInstaller : MonoInstaller
         Container.Bind<PowerUpConfig>().FromInstance(_powerUpConfig).AsSingle();
         Container.BindInterfacesTo<FragmentTimeScaleService>().AsSingle().NonLazy();
         Container.BindInterfacesTo<PowerUpLifetimeManager>().AsSingle().NonLazy();
+        Container.BindInterfacesTo<ComboPopupPresenter>().AsSingle();
+        Container.Bind<IAudioService>().To<AudioService>().AsSingle();
 
         // Bind LevelLoaderService with WorldData array
         Container.Bind<ILevelLoaderService>().To<LevelLoaderService>().AsSingle()

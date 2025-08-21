@@ -34,18 +34,35 @@ public class ResultsUI : MonoBehaviour, IInitializable, IDisposable
     [SerializeField] private Button _restartButton;
     [SerializeField] private Button _continueButton;
     [SerializeField] private Button _mainMenuButton;
+    [SerializeField] private Button _statsButton;
+    [SerializeField] private Button _statsBackButton;
+    [Header("Groups")]
+    [SerializeField] private GameObject _mainGroup;   
+    [SerializeField] private GameObject _statsPanel;  
+    [SerializeField] private CanvasGroup _statsCanvas;
+
+    [Header("Audio Clips")]                  
+    [SerializeField] private AudioClip _victoryStinger;
+    [SerializeField] private AudioClip _defeatStinger;
 
 
+    [Inject] private IAudioService _audio;
 
+    private Action _onRestart;
+    private Action _onMainMenu;
+    private Action _onNextLevel;
     public void Initialize()
     {
         _restartButton.onClick.AddListener(OnRestartClicked);
         _continueButton.onClick.AddListener(OnContinueClicked);
         _mainMenuButton.onClick.AddListener(OnMainMenuClicked);
+        if (_statsButton != null) _statsButton.onClick.AddListener(ShowStats);
+        if (_statsBackButton != null) _statsBackButton.onClick.AddListener(HideStats);
 
         // Subscribe to game events
         EventBus.Get<GameEndEvent>().Subscribe(OnGameEnd);
 
+        HideStats();
         Hide();
     }
 
@@ -54,6 +71,9 @@ public class ResultsUI : MonoBehaviour, IInitializable, IDisposable
         _restartButton.onClick.RemoveListener(OnRestartClicked);
         _continueButton.onClick.RemoveListener(OnContinueClicked);
         _mainMenuButton.onClick.RemoveListener(OnMainMenuClicked);
+
+        if (_statsButton != null) _statsButton.onClick.RemoveListener(ShowStats);
+        if (_statsBackButton != null) _statsBackButton.onClick.RemoveListener(HideStats);
 
         EventBus.Get<GameEndEvent>().Unsubscribe(OnGameEnd);
     }
@@ -71,8 +91,11 @@ public class ResultsUI : MonoBehaviour, IInitializable, IDisposable
 
     private void ShowVictory(LevelCompletionData completionData)
     {
+        HideStats();
+
         // Set victory UI state
         _titleText.text = "Victory!";
+        _titleText.color = Color.green;
 
         // Show all score details
         SetScoreVisibility(true);
@@ -82,31 +105,37 @@ public class ResultsUI : MonoBehaviour, IInitializable, IDisposable
         _continueButton.gameObject.SetActive(true);
         _restartButton.gameObject.SetActive(true);
         _mainMenuButton.gameObject.SetActive(true);
-
+        _statsButton.gameObject.SetActive(true);
         // Show and update stars
         SetStarVisibility(true);
         DisplayStarRating(completionData.starRating);
 
         Show();
+        _audio?.PlaySfx(_victoryStinger, 1f, 0.02f);
     }
 
     private void ShowDefeat()
     {
+
+        HideStats();
+
         // Set defeat UI state
         _titleText.text = "Game Over";
-
+        _titleText.color = Color.red;
         // Hide score details for defeat
         SetScoreVisibility(false);
 
         // Hide continue button, show only restart
         _continueButton.gameObject.SetActive(false);
+        _statsButton.gameObject.SetActive(false);
         _restartButton.gameObject.SetActive(true);
         _mainMenuButton.gameObject.SetActive(true);
 
         // Hide stars
-        SetStarVisibility(false);
-
+        SetStarVisibility(true);
+        DisplayStarRating(0);
         Show();
+        _audio?.PlaySfx(_defeatStinger, 1f, 0.00f);
     }
     public void Show()
     {
@@ -124,7 +153,7 @@ public class ResultsUI : MonoBehaviour, IInitializable, IDisposable
 
     private void DisplayScoreData(LevelCompletionData data)
     {
-        _finalScoreText.text = $"Final Score: {data.finalScore:N0}";
+        _finalScoreText.text = $"Final Score \n {data.finalScore:N0}";
         _timeBonusText.text = $"Time Bonus: +{data.timeBonus:N0}";
         _accuracyBonusText.text = $"Accuracy Bonus: +{data.accuracyBonus:N0}";
         _perfectBonusText.text = $"Perfect Bonus: +{data.perfectBonus:N0}";
@@ -162,25 +191,58 @@ public class ResultsUI : MonoBehaviour, IInitializable, IDisposable
         if (_starContainer != null)
             _starContainer.gameObject.SetActive(visible);
     }
+    private void ShowStats()
+{
+    if (_mainGroup != null) _mainGroup.SetActive(false);
 
+    if (_statsPanel != null)
+    {
+        _statsPanel.SetActive(true);
 
+        if (_statsCanvas != null)
+        {
+            _statsCanvas.alpha = 1f;
+            _statsCanvas.blocksRaycasts = true;
+            _statsCanvas.interactable = true;
+        }
+    }
+}
 
+private void HideStats()
+{
+    if (_statsCanvas != null)
+    {
+        _statsCanvas.alpha = 0f;
+        _statsCanvas.blocksRaycasts = false;
+        _statsCanvas.interactable = false;
+    }
+
+    if (_statsPanel != null) _statsPanel.SetActive(false);
+    if (_mainGroup != null)  _mainGroup.SetActive(true);
+}
+
+    public void SetHandlers(Action onRestart, Action onMainMenu, Action onNextLevel)
+    {
+        _onRestart = onRestart;
+        _onMainMenu = onMainMenu;
+        _onNextLevel = onNextLevel;
+    }
     private void OnRestartClicked()
     {
         Hide();
-        EventBus.Get<RestartGameEvent>().Invoke();
+        _onRestart?.Invoke();
     }
 
     private void OnContinueClicked()
     {
         Hide();
-        EventBus.Get<NextLevelRequestedEvent>().Invoke(new object());
+        _onNextLevel?.Invoke();
     }
 
     private void OnMainMenuClicked()
     {
         Hide();
-        EventBus.Get<MainMenuRequestedEvent>().Invoke(new object());
-
+        _onMainMenu?.Invoke();
     }
+
 }

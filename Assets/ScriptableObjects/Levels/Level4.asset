@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelName: Blocked Path
   levelIndex: 3
-  background: {fileID: 0}
+  background: {fileID: 5501988915683509518, guid: 5b4d4cc3df548d640ab0d910be6d4761, type: 3}
   music: {fileID: 0}
   timeLimit: 30
   maxPossibleScore: 0
@@ -38,4 +38,4 @@ MonoBehaviour:
   hazards: []
   powerUpDrops:
     prefab: {fileID: 3551949266175357073, guid: 67e89f57e02ea924299611a8602e9a58, type: 3}
-    dropChanceEach: 1
+    dropChanceEach: 0.25

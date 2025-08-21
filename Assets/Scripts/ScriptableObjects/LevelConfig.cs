@@ -6,8 +6,8 @@ public class LevelConfig : ScriptableObject
     [Header("Meta & Presentation")]
     public string levelName = "Stage 1";
     [Tooltip("Index of this level in the world (0-based: 0, 1, 2, 3, 4...)")]
-    public int levelIndex = 0;  // ADD THIS LINE
-    public Sprite background;
+    public int levelIndex = 0;
+    public GameObject background;
     public AudioClip music;
     public float timeLimit = 0f; // 0 -> no timer
 

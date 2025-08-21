@@ -23,7 +23,6 @@ public class LevelSelectionPanel : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _bestScoreText;
     [SerializeField] private Image[] _levelStars; // 3 star images
     [SerializeField] private Button _playLevelButton;
-    [SerializeField] private TextMeshProUGUI _completionStatusText;
     [SerializeField] private Button _backButton;
 
     [Header("World Info Display")]
@@ -192,8 +191,6 @@ public class LevelSelectionPanel : MonoBehaviour
         int stars = _progressionService.GetLevelStars(levelIndex);
         UpdateStarDisplay(stars);
 
-        // Completion status
-        UpdateCompletionStatus(levelIndex);
 
         // Play button state using real unlocked levels
         int unlockedLevels = _progressionService.GetUnlockedLevels();
@@ -214,35 +211,7 @@ public class LevelSelectionPanel : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Update completion status text
-    /// </summary>
-    private void UpdateCompletionStatus(int levelIndex)
-    {
-        int unlockedLevels = _progressionService.GetUnlockedLevels();
-        int stars = _progressionService.GetLevelStars(levelIndex);
 
-        if (levelIndex >= unlockedLevels)
-        {
-            _completionStatusText.text = "LOCKED";
-            _completionStatusText.color = Color.red;
-        }
-        else if (stars == 3)
-        {
-            _completionStatusText.text = "PERFECT";
-            _completionStatusText.color = Color.cyan;
-        }
-        else if (stars > 0)
-        {
-            _completionStatusText.text = "COMPLETED";
-            _completionStatusText.color = Color.green;
-        }
-        else
-        {
-            _completionStatusText.text = "NEW";
-            _completionStatusText.color = Color.yellow;
-        }
-    }
 
     // Button Event Handlers
     private void OnLevelButtonClicked(int levelIndex)

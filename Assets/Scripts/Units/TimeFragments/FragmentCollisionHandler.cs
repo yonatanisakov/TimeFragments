@@ -22,6 +22,8 @@ public class FragmentCollisionHandler : IFragmentCollisionHandler
         if(collisionObject.CompareTag("Bullet"))
         {
             HandleBulletCollision(fragment, collisionObject);
+            SFXBus.I?.PlayFragmentHit();
+
         }
         else if (collisionObject.CompareTag("Ground"))
         {

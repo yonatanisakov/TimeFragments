@@ -25,11 +25,6 @@ public interface IMainMenuUI
     void ShowSettings();
 
     /// <summary>
-    /// Show the credits panel
-    /// </summary>
-    void ShowCredits();
-
-    /// <summary>
     /// Set the loading state
     /// </summary>
     void SetLoadingState(bool isLoading);

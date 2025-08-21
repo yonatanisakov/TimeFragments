@@ -13,5 +13,6 @@ public interface IGameNavigationService
     /// Navigate to next level (handles progression logic)
     /// </summary>
     void GoToNextLevel();
+    public void ReloadCurrentLevel();
 
 }

@@ -9,8 +9,12 @@ public class DiscretePlayerHealthManager : IInitializable, IPlayerHealthManager,
     private int _initLives = 3;
     private int _maxLives = 5;
 
+    private const float INVULN_SECONDS = 2f;
+    private float _invulnerableUntil = 0f;
     public int currentLives { get; private set; }
     private IPowerUpService _powerUpService;
+
+    public bool IsInvulnerable => Time.time < _invulnerableUntil;
 
     [Inject]
     public DiscretePlayerHealthManager(IUIService uiService, IPowerUpService powerUpService)
@@ -24,10 +28,15 @@ public class DiscretePlayerHealthManager : IInitializable, IPlayerHealthManager,
         currentLives = _initLives;
         _uiService.InitHealthDisplay(currentLives);
         EventBus.Get<PlayerGetHitEvent>().Subscribe(OnPlayerHit);
+        _invulnerableUntil = 0f;
+
     }
 
     public void OnPlayerHit()
     {
+        if (IsInvulnerable)
+            return;
+
         if (_powerUpService.HasActivePowerUp(PowerUpType.Shield))
         {
             EventBus.Get<ShieldConsumedEvent>().Invoke();
@@ -38,9 +47,28 @@ public class DiscretePlayerHealthManager : IInitializable, IPlayerHealthManager,
             currentLives--;
             _uiService.UpdateHealthDisplay(false);
 
+            GrantInvulnerability(INVULN_SECONDS);
+            SFXBus.I?.PlayPlayerHit();
+
             if (currentLives <= 0)
                 EventBus.Get<LevelFailEvent>().Invoke();
         }
+    }
+    public void GrantInvulnerability(float duration)
+    {
+        if (duration <= 0f) return;
+        float until = Time.time + duration;
+        if (until > _invulnerableUntil)
+            _invulnerableUntil = until;
+
+        float remaining = Mathf.Max(0f, _invulnerableUntil - Time.time);
+        EventBus.Get<PlayerInvulnerabilityStartedEvent>().Invoke(remaining);
+
+    }
+
+    public void ClearInvulnerability()
+    {
+        _invulnerableUntil = 0f;
     }
     public void Dispose()
     {

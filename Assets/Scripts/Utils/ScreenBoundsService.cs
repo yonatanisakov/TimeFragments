@@ -11,6 +11,7 @@ namespace Assets.Scripts.Utils
     {
         Camera cam;
         private const float HUD_HEIGHT_PERCENTAGE = 0.1f;
+        [SerializeField] private float targetAspect = 9f / 16f;
         public ScreenBoundsService() => cam = Camera.main;
         public float minX => -GetHalfWidth();
 
@@ -20,7 +21,13 @@ namespace Assets.Scripts.Utils
 
         public float maxY => GetHalfHeight();
 
-        private float GetHalfWidth() => cam.orthographicSize * cam.aspect;
+        private float GetHalfWidth()
+        {
+            float halfHeight = cam.orthographicSize;
+            float cameraHalfWidth = halfHeight * cam.aspect;
+            float targetHalfWidth = halfHeight * targetAspect; 
+            return Mathf.Min(cameraHalfWidth, targetHalfWidth); 
+        }
         private float GetHalfHeight() => cam.orthographicSize;
         /// <summary>
         /// Calculate HUD height in world units

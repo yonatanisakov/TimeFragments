@@ -23,18 +23,12 @@ public class GameNavigationService : IGameNavigationService, IDisposable
         _levelLoaderService = levelLoaderService;
         _progressionService = progressionService;
 
-        // Subscribe to navigation events
-        EventBus.Get<MainMenuRequestedEvent>().Subscribe(OnMainMenuRequested);
-        EventBus.Get<NextLevelRequestedEvent>().Subscribe(OnNextLevelRequested);
     }
 
     public void Dispose()
     {
-        // Unsubscribe from events
-        EventBus.Get<MainMenuRequestedEvent>().Unsubscribe(OnMainMenuRequested);
-        EventBus.Get<NextLevelRequestedEvent>().Unsubscribe(OnNextLevelRequested);
-
-    }    public void GoToMainMenu()
+    } 
+    public void GoToMainMenu()
     {
         Debug.Log("Navigating to main menu");
         _sceneService.LoadMainMenuScene();
@@ -88,16 +82,10 @@ public class GameNavigationService : IGameNavigationService, IDisposable
 
         return false;
     }
-
-    // Event handlers
-    private void OnMainMenuRequested(object data)
+    public void ReloadCurrentLevel()
     {
-        GoToMainMenu();
-    }
-
-    private void OnNextLevelRequested(object data)
-    {
-        GoToNextLevel();
+        int idx = _sceneService.GetSelectedLevelIndex();
+        _sceneService.LoadGameplayScene(idx);
     }
 
 

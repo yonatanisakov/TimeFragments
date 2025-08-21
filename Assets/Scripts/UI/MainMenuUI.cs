@@ -11,18 +11,19 @@ public class MainMenuUI : MonoBehaviour, IMainMenuUI
     [SerializeField] private GameObject _mainMenuPanel;
     [SerializeField] private GameObject _levelSelectionPanel;
     [SerializeField] private GameObject _settingsPanel;
-    [SerializeField] private GameObject _creditsPanel;
+    [SerializeField] private GameObject _howToPlayPanel;
     [SerializeField] private GameObject _loadingPanel;
 
     [Header("Main Menu Buttons")]
     [SerializeField] private Button _playButton;
     [SerializeField] private Button _settingsButton;
-    [SerializeField] private Button _creditsButton;
+    [SerializeField] private Button _howToPlayButton; 
     [SerializeField] private Button _exitButton;
 
     [Header("Panel Components")]
     [SerializeField] private LevelSelectionPanel _levelSelectionPanelScript;
-    // We'll add other panel scripts later: SettingsPanel, CreditsPanel, etc.
+    [SerializeField] private HowToPlayPanel _howToPlayPanelScript;
+    [SerializeField] private SettingsPanel _settingsPanelScript;
 
     private void Start()
     {
@@ -64,11 +65,13 @@ public class MainMenuUI : MonoBehaviour, IMainMenuUI
         _mainMenuPanel.SetActive(false);
     }
 
-    public void ShowCredits()
+    public void ShowHowToPlay()
     {
-        _creditsPanel.SetActive(true);
-        _mainMenuPanel.SetActive(false);
+        if (_howToPlayPanel != null) _howToPlayPanel.SetActive(true);
+        if (_mainMenuPanel != null) _mainMenuPanel.SetActive(false);
+        //_howToPlayPanelScript?.Show();
     }
+
 
     public void SetLoadingState(bool isLoading)
     {
@@ -80,8 +83,8 @@ public class MainMenuUI : MonoBehaviour, IMainMenuUI
             _mainMenuPanel.SetActive(false);
             _levelSelectionPanel.SetActive(false);
             _settingsPanel.SetActive(false);
-            _creditsPanel.SetActive(false);
-        }
+            _howToPlayPanel.SetActive(false);
+                }
     }
 
     // Main Menu Button Handlers
@@ -95,11 +98,10 @@ public class MainMenuUI : MonoBehaviour, IMainMenuUI
         ShowSettings();
     }
 
-    private void OnCreditsButtonClicked()
+    private void OnHowToPlayButtonClicked()
     {
-        ShowCredits();
+        ShowHowToPlay();
     }
-
     private void OnExitButtonClicked()
     {
 #if UNITY_EDITOR
@@ -114,21 +116,31 @@ public class MainMenuUI : MonoBehaviour, IMainMenuUI
     {
         Show(); // Go back to main menu
     }
-
+    private void OnHowToPlayBackRequested()
+    {
+        Show(); 
+    }
+    private void OnSettingsBackRequested()
+    {
+        Show(); 
+    }
     // Helper Methods
     private void HideAllOtherPanels()
     {
         _levelSelectionPanel.SetActive(false);
         _settingsPanel.SetActive(false);
-        _creditsPanel.SetActive(false);
+        _howToPlayPanel.SetActive(false);
         _loadingPanel.SetActive(false);
     }
 
     private void SetupButtonCallbacks()
     {
         _playButton.onClick.AddListener(OnPlayButtonClicked);
-        _settingsButton.onClick.AddListener(OnSettingsButtonClicked);
-        _creditsButton.onClick.AddListener(OnCreditsButtonClicked);
+        if (_howToPlayButton != null)
+            _howToPlayButton.onClick.AddListener(OnHowToPlayButtonClicked);
+        if (_settingsButton != null)
+            _settingsButton.onClick.AddListener(OnSettingsButtonClicked);
+
         _exitButton.onClick.AddListener(OnExitButtonClicked);
     }
 
@@ -136,7 +148,7 @@ public class MainMenuUI : MonoBehaviour, IMainMenuUI
     {
         _playButton.onClick.RemoveAllListeners();
         _settingsButton.onClick.RemoveAllListeners();
-        _creditsButton.onClick.RemoveAllListeners();
+        _howToPlayButton.onClick.RemoveAllListeners();
         _exitButton.onClick.RemoveAllListeners();
     }
 
@@ -145,6 +157,11 @@ public class MainMenuUI : MonoBehaviour, IMainMenuUI
         // Subscribe to level selection panel events
         _levelSelectionPanelScript.OnBackRequested += OnLevelSelectionBackRequested;
         _levelSelectionPanelScript.OnShowLoadingRequested += SetLoadingState;
+
+        if (_howToPlayPanelScript != null)
+            _howToPlayPanelScript.OnBackRequested += OnHowToPlayBackRequested;
+        if (_settingsPanelScript != null)
+            _settingsPanelScript.OnBackRequested += OnSettingsBackRequested;
     }
 
     private void CleanupPanelEvents()
@@ -152,5 +169,10 @@ public class MainMenuUI : MonoBehaviour, IMainMenuUI
         // Unsubscribe from panel events
         _levelSelectionPanelScript.OnBackRequested -= OnLevelSelectionBackRequested;
         _levelSelectionPanelScript.OnShowLoadingRequested -= SetLoadingState;
+
+        if (_howToPlayPanelScript != null)
+            _howToPlayPanelScript.OnBackRequested -= OnHowToPlayBackRequested;
+        if (_settingsPanelScript != null)
+            _settingsPanelScript.OnBackRequested -= OnSettingsBackRequested;
     }
 }

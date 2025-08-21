@@ -1,8 +1,9 @@
 using EventBusScripts;
 using System;
 using UnityEngine;
+using Zenject;
 
-public class ScoreService : IScoreService
+public class ScoreService : IScoreService, ITickable
 {
     private const float COMBO_WINDOW = 2f;
 
@@ -21,7 +22,7 @@ public class ScoreService : IScoreService
     {
         CurrentScore = 0;
         CurrentMultiplier = 1f;
-        _lastHitTime = 0f;
+        _lastHitTime = -999f;
         _comboCount = 0;
 
         EventBus.Get<ScoreUpdatedEvent>().Invoke(CurrentScore);
@@ -35,7 +36,7 @@ public class ScoreService : IScoreService
         int finalScore = Mathf.RoundToInt(hitData.basePoints * CurrentMultiplier);
         CurrentScore += finalScore;
 
-        _lastHitTime = UnityEngine.Time.time;
+        _lastHitTime = Time.time;
 
         EventBus.Get<ScoreUpdatedEvent>().Invoke(CurrentScore);
         EventBus.Get<ComboMultiplierChangedEvent>().Invoke(CurrentMultiplier);
@@ -65,4 +66,17 @@ public class ScoreService : IScoreService
             _ => 2.5f    // Fourth+ hits (max multiplier)
         };
     }
+
+
+    public void Tick()
+    {
+        if (CurrentMultiplier > 1f && (Time.time - _lastHitTime) > COMBO_WINDOW) 
+        {
+            _comboCount = 0;
+            CurrentMultiplier = 1f;
+            // if you keep a comboCount internally, reset it here too
+            EventBus.Get<ComboMultiplierChangedEvent>().Invoke(1f);
+        }
+    }
+
 }

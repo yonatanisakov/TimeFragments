@@ -11,6 +11,11 @@ TagManager:
   - Time Fragment
   - Wall
   - PowerUp
+  - PowerUpUIAnchor
+  - UIAudio
+  - MusicAudio
+  - SFXAudio
+  - FragmentVisualRoot
   layers:
   - Default
   - TransparentFX
@@ -45,6 +50,18 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: FarBackground
+    uniqueID: 3043711029
+    locked: 0
+  - name: Background
+    uniqueID: 1637792943
+    locked: 0
+  - name: Midground
+    uniqueID: 3912992631
+    locked: 0
+  - name: Foreground
+    uniqueID: 2182832393
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0

@@ -5,17 +5,22 @@ using Zenject;
 public class PlayerTriggerHandler : MonoBehaviour
 {
     private IPowerUpService _powerUpService;
+    private IPlayerHealthManager _health;
 
     [Inject]
-    public void Construct(IPowerUpService powerUpService)
+    public void Construct(IPowerUpService powerUpService, IPlayerHealthManager health) 
     {
         _powerUpService = powerUpService;
+        _health = health; 
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (_health != null && _health.IsInvulnerable && collision.gameObject.CompareTag("Time Fragment"))
+            return;
         if (collision.gameObject.CompareTag("Time Fragment"))
         {
             EventBus.Get<PlayerGetHitEvent>().Invoke();
+
         }
         else if (collision.gameObject.CompareTag("PowerUp"))
         {
@@ -28,6 +33,7 @@ public class PlayerTriggerHandler : MonoBehaviour
     /// <param name="powerUpObject">The power-up GameObject that was touched</param>
     private void HandlePowerUpCollection(GameObject powerUpObject)
     {
+
         var powerUpCollectible = powerUpObject.GetComponent<PowerUpCollectible>();
         if (powerUpCollectible == null)
         {
@@ -51,6 +57,7 @@ public class PlayerTriggerHandler : MonoBehaviour
 
         // Handle the collection (deactivate the collectible)
         powerUpCollectible.Collect();
+        SFXBus.I?.PlayPowerupPickup();
 
         Debug.Log($"Power-up collected and activated: {PowerUpTypeHelper.GetDisplayName(powerUpCollectible.PowerUpType)}");
 

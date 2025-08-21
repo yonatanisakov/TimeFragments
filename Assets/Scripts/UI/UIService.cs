@@ -6,12 +6,35 @@ public class UIService : IUIService
 {
     private readonly ResultsUI _resultsUI;
     private readonly BottomHudUI _hudUI;
+    private readonly ComboPopupWidget _comboPopup;
+    // ==== Pause ====
+    [SerializeField] private PauseWindowUI _pauseWindow;
+    private bool _pauseOpen;
 
-    public UIService(ResultsUI resultsUI, BottomHudUI hudUI)
+    // ==== Results callbacks (מוזרקים ע"י ה-Controller) ====
+    private Action _onResultsRestart;
+    private Action _onResultsMainMenu;
+    private Action _onResultsNextLevel;
+
+    public UIService(ResultsUI resultsUI, BottomHudUI hudUI, ComboPopupWidget comboPopup, PauseWindowUI pauseWindow)
     {
         _resultsUI = resultsUI;
         _hudUI = hudUI;
+        _comboPopup = comboPopup;
+        _pauseWindow = pauseWindow;
+
     }
+
+    // ========== RESULTS ==========
+    public void SetResultsHandlers(Action onRestart, Action onMainMenu, Action onNextLevel)
+    {
+        _onResultsRestart = onRestart;
+        _onResultsMainMenu = onMainMenu;
+        _onResultsNextLevel = onNextLevel;
+
+        _resultsUI.SetHandlers(_onResultsRestart, _onResultsMainMenu, _onResultsNextLevel);
+    }
+    // ========== HUD ==========
 
     public void HideResultsUI()
     {
@@ -60,10 +83,37 @@ public class UIService : IUIService
     {
         _hudUI.UpdateScore(0);
     }
+    // ========== FX ==========
 
-    public void ShowFloatingText(string text, Vector3 worldPosition, Color color)
+    public void ShowFloatingTextFollow(string text, Transform followTarget, Color color)
     {
-        // TODO: Implement floating text system for combo multipliers
-        // This will show combo text at fragment impact locations
+        _comboPopup?.Show(followTarget, text, color);
     }
+    // ========== PAUSE ==========
+    public bool IsPauseWindowOpen => _pauseOpen && _pauseWindow != null && _pauseWindow.IsOpen;
+
+    public void ShowPauseWindow(Action onResume, Action onRestart, Action onSettings, Action onQuit)
+    {
+        if (_pauseWindow == null)
+        {
+            Debug.LogWarning("[UIService] PauseWindowUI is not assigned on Canvas.");
+            return;
+        }
+        _pauseOpen = true;
+        _pauseWindow.Show(
+            onResume: () => { _pauseOpen = false; onResume?.Invoke(); },
+            onRestart: () => { _pauseOpen = false; onRestart?.Invoke(); },
+            onSettings: () => { onSettings?.Invoke(); },
+            onQuit: () => { _pauseOpen = false; onQuit?.Invoke(); }
+        );
+    }
+
+    public void HidePauseWindow()
+    {
+        if (_pauseWindow == null) return;
+        _pauseWindow.Hide();
+        _pauseOpen = false;
+    }
+
+
 }

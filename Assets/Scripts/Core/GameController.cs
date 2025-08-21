@@ -7,24 +7,67 @@ using Zenject;
 
 public class GameController : IGameController, ITickable, IDisposable
 {
-    public  IGameStateMachine GameStateMachine { get; private set; }
+    public IGameStateMachine GameStateMachine { get; private set; }
     private readonly IUIService _uIService;
-
+    private readonly IGameNavigationService _navigation;
     [Inject]
-    public GameController(IPlayerSpawner playerSpawner, IUIService uIService)
+    public GameController(IPlayerSpawner playerSpawner, IUIService uIService, IGameNavigationService navigation)
     {
         EventBus.Get<LevelFailEvent>().Subscribe(OnLevelFail);
         EventBus.Get<LevelCompletedEvent>().Subscribe(OnLevelCompleted);
-        EventBus.Get<RestartGameEvent>().Subscribe(HandleRestartGame);
-
         _uIService = uIService;
+        _navigation = navigation;
+
         GameStateMachine = new GameStateMachine(playerSpawner, this);
+    }
+    public void RequestPause()
+    {
+        _uIService.ShowPauseWindow(
+    onResume: ResumeFromPause,
+    onRestart: RequestRestart,
+    onSettings: null,
+    onQuit: RequestMainMenu
+
+        );
+    }
+
+    public void ResumeFromPause()
+    {
+        _uIService.HidePauseWindow();
+        GameStateMachine.ChangeGameState(GameStateMachine.PlayingState);
+    }
+
+    public void RequestRestart()
+    {
+        _uIService.HidePauseWindow();
+        _uIService.HideResultsUI();
+        Time.timeScale = 1f;
+        _navigation.ReloadCurrentLevel();
+    }
+
+    public void RequestMainMenu()
+    {
+        _uIService.HidePauseWindow();
+        _uIService.HideResultsUI();
+        Time.timeScale = 1f;
+        _navigation.GoToMainMenu();
+    }
+    public void RequestNextLevel()
+    {
+        _uIService.HidePauseWindow();
+        _uIService.HideResultsUI();
+        Time.timeScale = 1f;
+        _navigation.GoToNextLevel();
     }
     private void OnLevelFail()
     {
         // Transition to ending state
         GameStateMachine.ChangeGameState(GameStateMachine.EndingState);
-
+        _uIService.SetResultsHandlers(
+onRestart: RequestRestart,
+onMainMenu: RequestMainMenu,
+onNextLevel: RequestNextLevel
+    );
         // Fire event for UI systems
         EventBus.Get<GameEndEvent>().Invoke(new GameEndData { isVictory = false });
     }
@@ -33,7 +76,11 @@ public class GameController : IGameController, ITickable, IDisposable
     {
         // Transition to ending state  
         GameStateMachine.ChangeGameState(GameStateMachine.EndingState);
-
+        _uIService.SetResultsHandlers(
+    onRestart: RequestRestart,
+    onMainMenu: RequestMainMenu,
+    onNextLevel: RequestNextLevel
+            );
         // Fire event for UI systems
         var gameEndData = new GameEndData
         {
@@ -42,12 +89,6 @@ public class GameController : IGameController, ITickable, IDisposable
         };
 
         EventBus.Get<GameEndEvent>().Invoke(gameEndData);
-    }
-    public void HandleRestartGame()
-    {
-        _uIService.HideResultsUI();
-        UnityEngine.Time.timeScale = 1f; // Ensure time is resumed before scene reload
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
     public void Tick()
     {
@@ -58,8 +99,6 @@ public class GameController : IGameController, ITickable, IDisposable
     {
         EventBus.Get<LevelFailEvent>().Unsubscribe(OnLevelFail);
         EventBus.Get<LevelCompletedEvent>().Unsubscribe(OnLevelCompleted);
-        EventBus.Get<RestartGameEvent>().Unsubscribe(HandleRestartGame);
-
     }
 
 }
